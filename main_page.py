@@ -22,7 +22,11 @@ def parser_category(page, category, page_path):
     category_info = dict()
     category_info["page"] = page
     category_info["page_path"] = page_path
-    category_info["name"] = category.find("span", {"class": "title"}).get_text()
+    title = category.find("span", {"class": "title"}).get_text()
+    if title == "無標題":
+        category_info["name"] = category.find("span", {"class": "name"}).get_text()
+    else:
+        category_info["name"] = title
 
     try:
         links = category.find_all("a", {"href": re.compile("res=[^#]*$")})

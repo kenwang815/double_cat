@@ -24,16 +24,37 @@ def _get_all_page_link(url):
     return links
 
 
+def parser_obj(obj):
+    img_link = None
+    image_links = obj.find("a", {"href": re.compile("src/\d+\.[a-zA-Z]+$")})
+    if image_links is None:
+        return img_link
+
+    if len(image_links) > 1:
+        for link in image_links:
+            if "href" in link.attrs:
+                img_link = "http:" + link['href']
+    else:
+        if "href" in image_links.attrs:
+            img_link = "http:" + image_links['href']
+
+    return img_link
+
+
 def _get_image_link(url):
     img_dataset = set()
 
     bs_obj = BeautifulSoup(urlopen(url), "html.parser")
+    title_obj = bs_obj.find("div", {"id": "threads"})
+    link = parser_obj(title_obj)
+    if link is not None:
+        img_dataset.add(link)
+
     replys_obj = bs_obj.find_all("div", {"class": "reply"})
-    for index, reply in enumerate(replys_obj):
-        image_links = reply.find_all("a", {"href": re.compile("src/\d+\.[a-zA-Z]+$")})
-        for link in image_links:
-            if "href" in link.attrs:
-                img_dataset.add("http:" + link['href'])
+    for reply in replys_obj:
+        link = parser_obj(reply)
+        if link is not None:
+            img_dataset.add(link)
 
     return img_dataset
 

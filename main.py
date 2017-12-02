@@ -12,8 +12,7 @@ if __name__ == "__main__":
     if not os.path.exists(config.download_folder):
         os.makedirs(config.download_folder)
 
-#    page_links = main_page.get_all_page_link()
-    page_links = ["http://rthost.cr.rs/sd"]
+    page_links = main_page.get_all_page_link()
 
     for page, link in enumerate(page_links):
         print("page={0} link={1}".format(page, link))

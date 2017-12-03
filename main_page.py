@@ -3,6 +3,8 @@ import config
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
+import configparser
+import time
 
 
 def get_all_page_link():
@@ -19,22 +21,26 @@ def get_all_page_link():
 
 
 def get_category_list(link):
+    category_list = list()
     html = urlopen(link)
     bs_obj = BeautifulSoup(html, "html.parser")
-    category_list = bs_obj.find_all("div", {"class": "grid"})
+    category_tag = bs_obj.find_all("div", {"class": "grid"})
+
+    for category in category_tag:
+        category_list.append(_parser_category(category))
 
     return category_list
 
 
-def parser_category(page, category, page_path):
+def _parser_category(category):
     category_info = dict()
-    category_info["page"] = page
-    category_info["page_path"] = page_path
     title = category.find("span", {"class": "title"}).get_text()
     if title == "無標題":
         category_info["name"] = category.find("span", {"class": "name"}).get_text()
     else:
         category_info["name"] = title
+
+    category_info["name"] = category_info["name"].replace("/", " ")
 
     try:
         links = category.find_all("a", {"href": re.compile("res=[^#]*$")})
@@ -44,3 +50,19 @@ def parser_category(page, category, page_path):
         category_info["link"] = None
 
     return category_info
+
+
+def pack(page_links):
+    config_parser = configparser.RawConfigParser()
+
+    config_parser.add_section("Page")
+    for index, link in enumerate(page_links):
+        config_parser.set("Page", str(index), link)
+
+    config_parser.add_section("Other")
+    config_parser.set("Other", "Count", len(page_links))
+    config_parser.set("Other", "Timestamp", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+
+    save_path = "{0}/main_page.cfg".format(config.export_folder)
+    with open(save_path, 'w') as configfile:
+        config_parser.write(configfile)

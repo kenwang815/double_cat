@@ -1,10 +1,13 @@
 # -*- coding: UTF-8 -*-
 import config
+import main_page
 import utils
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import os
 import re
+import configparser
+import time
 
 
 def _get_all_page_link(url):
@@ -70,10 +73,10 @@ def collect_image_link(category_info):
     return all_img_dataset
 
 
-def download_image(category_info):
+def download_image(category_info, save_folder_path):
     all_img_dataset = collect_image_link(category_info)
 
-    save_path = "{0}/{1}".format(category_info['page_path'], category_info['name'])
+    save_path = "{0}/{1}".format(save_folder_path, category_info['name'])
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
@@ -82,5 +85,46 @@ def download_image(category_info):
     for index, url in enumerate(all_img_dataset):
         extension = url.split(".")[-1]
         img_path = "{0}/{1}.{2}".format(save_path, index, extension)
-        print("image={0}/{1} from={2} destination={3}".format(index + 1, img_count, url, img_path))
+        print("image={0}/{1} save {2}".format(index + 1, img_count, img_path))
         utils.download(img_path, url)
+
+
+def pack(page_links):
+    page_count = page_links.__len__()
+    for page, link in enumerate(page_links):
+        print("main page={0}/{1} link={2}\n".format(page + 1, page_count, link))
+        category_list = main_page.get_category_list(link)
+
+        save_folder_path = "{0}/{1}".format(config.export_folder, page)
+        if not os.path.exists(save_folder_path):
+            os.makedirs(save_folder_path)
+
+        category_count = category_list.__len__()
+        for index, category in enumerate(category_list):
+            print("category={0}/{1} name={2}\n".format(index + 1, category_count, category["name"]))
+            image_links = collect_image_link(category)
+            config_parser = configparser.RawConfigParser()
+
+            config_parser.add_section("Page")
+            config_parser.set("Page", "index", str(page))
+            config_parser.set("Page", "link", link)
+
+            config_parser.add_section("Category")
+            config_parser.set("Category", "index", str(index))
+            config_parser.set("Category", "name", category["name"])
+            config_parser.set("Category", "link", category["link"])
+
+            config_parser.add_section("Image")
+            for index, link in enumerate(image_links):
+                config_parser.set("Image", str(index), link)
+
+            config_parser.add_section("Path")
+            config_parser.set("Path", "download", "{0}/{1}/{2}".format(config.download_folder, page, category["name"]))
+
+            config_parser.add_section("Other")
+            config_parser.set("Other", "Count", image_links.__len__())
+            config_parser.set("Other", "Timestamp", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+
+            save_path = "{0}/{1}.cfg".format(save_folder_path, category["name"])
+            with open(save_path, 'w') as configfile:
+                config_parser.write(configfile)

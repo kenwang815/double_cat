@@ -28,8 +28,7 @@ Commands:
   start
 ```
 
-- pack
-get all image url, and save to src folder.
+- pack - get all image url, and save to src folder.
 ```
 python main.py pack
 
@@ -45,8 +44,7 @@ category=2/15 name=無名氏
 ...
 ```
 
-- download
-load src folder to download images.
+- download - load src folder to download images.
 ```
 python main.py download
 
@@ -61,8 +59,7 @@ save images/0/饅饅來祭/6.jpg
 ...
 ```
 
-- start
-search url and download image.
+- start - search url and download image.
 ```
 python main.py start
 main page=1/54 link=http://rthost.cr.rs/sd/

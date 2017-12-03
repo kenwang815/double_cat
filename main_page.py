@@ -18,6 +18,14 @@ def get_all_page_link():
     return links
 
 
+def get_category_list(link):
+    html = urlopen(link)
+    bs_obj = BeautifulSoup(html, "html.parser")
+    category_list = bs_obj.find_all("div", {"class": "grid"})
+
+    return category_list
+
+
 def parser_category(page, category, page_path):
     category_info = dict()
     category_info["page"] = page

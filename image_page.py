@@ -1,12 +1,10 @@
 # -*- coding: UTF-8 -*-
 import config
+import utils
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import os
 import re
-import time
-import requests
-import shutil
 
 
 def _get_all_page_link(url):
@@ -59,15 +57,7 @@ def _get_image_link(url):
     return img_dataset
 
 
-def _download(path, url):
-    r = requests.get(url, stream=True)
-    if r.status_code == 200:
-        with open(path, 'wb') as f:
-            r.raw.decode_content = True
-            shutil.copyfileobj(r.raw, f)
-
-
-def collect_image(category_info):
+def collect_image_link(category_info):
     all_img_dataset = set()
 
     page_links = _get_all_page_link(category_info['link'])
@@ -76,8 +66,12 @@ def collect_image(category_info):
     for index, link in enumerate(page_links):
         print("image page={0}/{1} link={2}".format(index + 1, page_count, link))
         all_img_dataset.update(_get_image_link(link))
-#        time.sleep(1)
-    print("\n")
+
+    return all_img_dataset
+
+
+def download_image(category_info):
+    all_img_dataset = collect_image_link(category_info)
 
     save_path = "{0}/{1}".format(category_info['page_path'], category_info['name'])
     if not os.path.exists(save_path):
@@ -89,6 +83,4 @@ def collect_image(category_info):
         extension = url.split(".")[-1]
         img_path = "{0}/{1}.{2}".format(save_path, index, extension)
         print("image={0}/{1} from={2} destination={3}".format(index + 1, img_count, url, img_path))
-        _download(img_path, url)
-#        time.sleep(2)
-    print("\n")
+        utils.download(img_path, url)

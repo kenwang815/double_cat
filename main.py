@@ -14,27 +14,39 @@ log = logging.getLogger(__name__)
 
 
 @click.group()
-def cli():
+@click.option("--page_url", type=str, help="select a main page url")
+def cli(page_url):
     if not os.path.exists(config.export_folder):
         os.makedirs(config.export_folder)
     if not os.path.exists(config.download_folder):
         os.makedirs(config.download_folder)
 
 
+def download_page_image(page, link, page_count):
+    log.debug("main page={0}/{1} link={2}\n".format(page + 1, page_count, link))
+    category_list = main_page.get_category_list(link)
+
+    save_folder_path = "{0}/{1}".format(config.download_folder, page)
+    category_count = category_list.__len__()
+    for index, category in enumerate(category_list):
+        log.debug("category={0}/{1} name={2}\n".format(index + 1, category_count, category["name"]))
+        image_page.download_image(category, save_folder_path)
+
+
 @click.command()
-def start():
+@click.option("--page_url", type=str, help="select a main page url")
+def start(page_url):
     page_links = main_page.get_all_page_link()
 
     page_count = page_links.__len__()
-    for page, link in enumerate(page_links):
-        log.debug("main page={0}/{1} link={2}\n".format(page + 1, page_count, link))
-        category_list = main_page.get_category_list(link)
-
-        save_folder_path = "{0}/{1}".format(config.download_folder, page)
-        category_count = category_list.__len__()
-        for index, category in enumerate(category_list):
-            log.debug("category={0}/{1} name={2}\n".format(index + 1, category_count, category["name"]))
-            image_page.download_image(category, save_folder_path)
+    if page_url is None:
+        for page, link in enumerate(page_links):
+            download_page_image(page, link, page_count)
+    else:
+        for page, link in enumerate(page_links):
+            if link == page_url:
+                download_page_image(page, link, page_count)
+                break
 
 
 @click.command()

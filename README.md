@@ -63,10 +63,9 @@ save images/0/饅饅來祭/6.jpg
 - start - search all url and download all image.
 ```
 python main.py start
+
 main page=1/54 link=http://rthost.cr.rs/sd/
-
 category=1/15 name=饅饅來祭
-
 collect all image link
 image page=1/2 link=http://rthost.cr.rs/sd/pixmicat.php?res=383048&page_num=0
 image page=2/2 link=http://rthost.cr.rs/sd/pixmicat.php?res=383048&page_num=1
@@ -80,10 +79,9 @@ image=2/52 save images/0/饅饅來祭/1.jpg
 - start - select one page download.
 ```
 python main.py start --page_url http://rthost.cr.rs/sd/pixmicat.php?page_num=28
+
 00:53:55 - 69650:MainThread - __main__ - DEBUG - main page=29/54 link=http://rthost.cr.rs/sd/pixmicat.php?page_num=28
-
 00:53:55 - 69650:MainThread - __main__ - DEBUG - category=1/15 name=腦殘記者祭
-
 00:53:56 - 69650:MainThread - image_page - DEBUG - collect all image link
 00:53:56 - 69650:MainThread - image_page - DEBUG - image page=1/1 link=http://rthost.cr.rs/sd/pixmicat.php?res=356759&page_num=0
 00:53:56 - 69650:MainThread - image_page - DEBUG - save image in images/28/腦殘記者祭

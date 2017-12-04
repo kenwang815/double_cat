@@ -1,10 +1,13 @@
 # -*- coding: UTF-8 -*-
+import logging
 import config
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 import configparser
 import time
+
+log = logging.getLogger(__name__)
 
 
 def get_all_page_link():
@@ -46,7 +49,7 @@ def _parser_category(category):
         links = category.find_all("a", {"href": re.compile("res=[^#]*$")})
         category_info["link"] = config.url + links[0].attrs["href"]
     except KeyError as e:
-        print(e)
+        log.debug(e)
         category_info["link"] = None
 
     return category_info

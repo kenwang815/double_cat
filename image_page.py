@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import logging
 import config
 import main_page
 import utils
@@ -8,6 +9,9 @@ import os
 import re
 import configparser
 import time
+
+
+log = logging.getLogger(__name__)
 
 
 def _get_all_page_link(url):
@@ -65,9 +69,9 @@ def collect_image_link(category_info):
 
     page_links = _get_all_page_link(category_info['link'])
     page_count = page_links.__len__()
-    print("collect all image link")
+    log.debug("collect all image link")
     for index, link in enumerate(page_links):
-        print("image page={0}/{1} link={2}".format(index + 1, page_count, link))
+        log.debug("image page={0}/{1} link={2}".format(index + 1, page_count, link))
         all_img_dataset.update(_get_image_link(link))
 
     return all_img_dataset
@@ -80,19 +84,19 @@ def download_image(category_info, save_folder_path):
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
-    print("save image in {0}".format(save_path))
+    log.debug("save image in {0}".format(save_path))
     img_count = all_img_dataset.__len__()
     for index, url in enumerate(all_img_dataset):
         extension = url.split(".")[-1]
         img_path = "{0}/{1}.{2}".format(save_path, index, extension)
-        print("image={0}/{1} save {2}".format(index + 1, img_count, img_path))
+        log.debug("image={0}/{1} save {2}".format(index + 1, img_count, img_path))
         utils.download(img_path, url)
 
 
 def pack(page_links):
     page_count = page_links.__len__()
     for page, link in enumerate(page_links):
-        print("main page={0}/{1} link={2}\n".format(page + 1, page_count, link))
+        log.debug("main page={0}/{1} link={2}\n".format(page + 1, page_count, link))
         category_list = main_page.get_category_list(link)
 
         save_folder_path = "{0}/{1}".format(config.export_folder, page)
@@ -101,7 +105,7 @@ def pack(page_links):
 
         category_count = category_list.__len__()
         for index, category in enumerate(category_list):
-            print("category={0}/{1} name={2}\n".format(index + 1, category_count, category["name"]))
+            log.debug("category={0}/{1} name={2}\n".format(index + 1, category_count, category["name"]))
             image_links = collect_image_link(category)
             config_parser = configparser.RawConfigParser()
 

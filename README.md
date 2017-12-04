@@ -20,8 +20,9 @@ double_cat/src/
 Usage: main.py [OPTIONS] COMMAND [ARGS]...
 
 Options:
-  --page_url TEXT  select a main page url
-  --help           Show this message and exit.
+  --page_url     TEXT  select a main page url
+  --category_url TEXT  select a category page url
+  --help         Show this message and exit.
 
 Commands:
   download
@@ -91,4 +92,21 @@ python main.py start --page_url http://rthost.cr.rs/sd/pixmicat.php?page_num=28
 00:53:57 - 69650:MainThread - image_page - DEBUG - image=2/8 save images/28/腦殘記者祭/1.jpg
 ...
 ...
+```
+
+- start - select one category download.
+```
+python main.py start --category_url http://rthost.cr.rs/sd/pixmicat.php?res=294406
+
+01:38:52 - 71517:MainThread - __main__ - DEBUG - category=8/15 name=啟萌祭
+01:38:52 - 71517:MainThread - image_page - DEBUG - collect all image link
+01:38:52 - 71517:MainThread - image_page - DEBUG - image page=1/6 link=http://rthost.cr.rs/sd/pixmicat.php?res=294406&page_num=0
+01:38:52 - 71517:MainThread - image_page - DEBUG - image page=2/6 link=http://rthost.cr.rs/sd/pixmicat.php?res=294406&page_num=1
+01:38:53 - 71517:MainThread - image_page - DEBUG - image page=3/6 link=http://rthost.cr.rs/sd/pixmicat.php?res=294406&page_num=2
+01:38:53 - 71517:MainThread - image_page - DEBUG - image page=4/6 link=http://rthost.cr.rs/sd/pixmicat.php?res=294406&page_num=3
+01:38:53 - 71517:MainThread - image_page - DEBUG - image page=5/6 link=http://rthost.cr.rs/sd/pixmicat.php?res=294406&page_num=4
+01:38:54 - 71517:MainThread - image_page - DEBUG - image page=6/6 link=http://rthost.cr.rs/sd/pixmicat.php?res=294406&page_num=5
+01:38:54 - 71517:MainThread - image_page - DEBUG - save image in images/11/啟萌祭
+01:38:54 - 71517:MainThread - image_page - DEBUG - image=1/150 save images/11/啟萌祭/0.gif
+01:38:54 - 71517:MainThread - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): rths.cf
 ```

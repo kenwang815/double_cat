@@ -1,6 +1,9 @@
 # -*- coding: UTF-8 -*-
 import requests
 import shutil
+import logging
+
+log = logging.getLogger(__name__)
 
 
 def log_scope(log):
@@ -21,8 +24,11 @@ def log_scope(log):
 
 
 def download(path, url):
-    r = requests.get(url, stream=True)
-    if r.status_code == 200:
-        with open(path, 'wb') as f:
-            r.raw.decode_content = True
-            shutil.copyfileobj(r.raw, f)
+    try:
+        r = requests.get(url, stream=True)
+        if r.status_code == 200:
+            with open(path, 'wb') as f:
+                r.raw.decode_content = True
+                shutil.copyfileobj(r.raw, f)
+    except Exception as e:
+        log.error(e)

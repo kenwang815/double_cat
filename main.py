@@ -92,6 +92,7 @@ def download():
                 utils.download(img_path, url)
                 log.debug("save {}".format(img_path))
 
+            os.remove(img_cfg)
 
 cli.add_command(start)
 cli.add_command(pack)

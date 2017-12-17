@@ -4,6 +4,7 @@ from flask import Flask, Blueprint, request, g
 from config import Config
 import time
 from . import api_1_0
+from . import admin
 from .persistence import model
 from . import util
 
@@ -40,5 +41,6 @@ def create_app():
     app.config.from_object(Config)
     Config.init_app(app)
     model.init(app)
+    admin.init(app)
 
     return app

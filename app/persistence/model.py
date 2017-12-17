@@ -33,6 +33,15 @@ class Category(BaseModel):
     url = CharField(null=True, index=True)
 
 
+class Image(BaseModel):
+    extension = CharField(index=True)
+    size = IntegerField(default=0, index=True)
+    unit = CharField(index=True)
+    width = IntegerField(default=0, index=True)
+    height = IntegerField(default=0, index=True)
+    url = CharField(null=True, index=True)
+
+
 def init(app):
     if app.config['DEBUG']:
         database = SqliteDatabase(config.sqlite_db)
@@ -44,4 +53,4 @@ def init(app):
     database_proxy.initialize(database)
     if not os.path.isfile(config.sqlite_db):
         database.create_table(Category)
-    database_proxy.close()
+        database.create_table(Image)

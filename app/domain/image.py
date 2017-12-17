@@ -1,16 +1,16 @@
 # -*- coding: UTF-8 -*-
 import logging
 from .. import util
-from ..persistence.model import Category
+from ..persistence.model import Image
 from peewee import IntegrityError
 
 log = logging.getLogger(__name__)
 
 
 @util.log_scope(log)
-def create(name, count, url):
+def create(name, extension, size, unit, width, height, url):
     try:
-        p = Category.create(name=name, count=count, url=url)
+        p = Image.create(name=name, extension=extension, size=size, unit=unit, width=width, height=height, url=url)
         return p
     except IntegrityError as e:
         log.debug(e)

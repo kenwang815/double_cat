@@ -19,4 +19,5 @@ def init(app):
     admin = Admin(app, name='double_cat', template_mode='bootstrap3')
     admin.add_view(AdminModel(model.Category))
     admin.add_view(AdminModel(model.Image))
+    admin.add_view(AdminModel(model.Category_Image))
     log.info('inited.')

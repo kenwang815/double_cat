@@ -17,6 +17,11 @@ def close_connection():
 
 
 class BaseModel(Model):
+    class Meta:
+        database = database_proxy
+
+
+class CommonModel(BaseModel):
     name = CharField(index=True, unique=True, constraints=[Check('name <> \'\'')])
     created_date = DateTimeField(index=True, constraints=[SQL('DEFAULT (datetime(\'now\', \'localtime\'))')])
     modified_date = DateTimeField(null=True)
@@ -24,22 +29,32 @@ class BaseModel(Model):
     def __unicode__(self):
         return u'<{}:{}>'.format(self.id, self.name)
 
-    class Meta:
-        database = database_proxy
 
-
-class Category(BaseModel):
+class Category(CommonModel):
     count = IntegerField(default=0, index=True)
-    url = CharField(null=True, index=True)
+    url = CharField(unique=True, index=True)
 
 
-class Image(BaseModel):
+class Image(CommonModel):
     extension = CharField(index=True)
     size = IntegerField(default=0, index=True)
     unit = CharField(index=True)
     width = IntegerField(default=0, index=True)
     height = IntegerField(default=0, index=True)
-    url = CharField(null=True, index=True)
+    url = CharField(unique=True, index=True)
+
+
+class Category_Image(BaseModel):
+    category = ForeignKeyField(Category, on_delete='CASCADE')
+    image = ForeignKeyField(Image, on_delete='CASCADE')
+
+    def __unicode__(self):
+        return u'<category:{} image:{}>'.format(self.category_id, self.image_id)
+
+    class Meta:
+        indexes = (
+            (('category', 'image'), True),
+        )
 
 
 def init(app):
@@ -54,3 +69,4 @@ def init(app):
     if not os.path.isfile(config.sqlite_db):
         database.create_table(Category)
         database.create_table(Image)
+        database.create_table(Category_Image)

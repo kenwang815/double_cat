@@ -23,9 +23,9 @@ class Import(Resource):
             for category in category_links:
                 img_links = double_cat.collect_image_link(category)
                 category["count"] = img_links.__len__()
-                Category.create(**category)
+                category_id = Category.create(**category)
 
                 for img_info in img_links:
-                    Image.create(**img_info)
+                    Image.create(category_id, **img_info)
 
         return None, 201
